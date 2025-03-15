@@ -8,6 +8,8 @@ pub use binary_writer::BinaryWriter;
 mod tests {
     use crate::*;
     use std::io::Cursor;
+    use std::net::{TcpListener, TcpStream};
+    use std::sync::{Arc, Mutex};
 
     #[test]
     fn test_u8_and_i8_read_write() {
@@ -160,5 +162,39 @@ mod tests {
         let read_bytes = cursor.read_bytes(4).unwrap();
         let x: [u8; 4] = read_bytes.as_slice().try_into().unwrap();
         assert_eq!(u32::from_be_bytes(x), u32::MAX);
+    }
+
+    #[test]
+    fn test_tcp_stream() {
+        let listener = TcpListener::bind("127.0.0.1:8080").unwrap();
+        let mut client = TcpStream::connect("127.0.0.1:8080").unwrap();
+        let (tx, rx) = std::sync::mpsc::channel();
+        let tx = Arc::new(Mutex::new(tx));
+
+        std::thread::spawn(move || {
+            for stream in listener.incoming() {
+                let mut stream = stream.unwrap();
+                let mut string = String::new();
+                loop {
+                    let char = stream.read_u8();
+                    match char {
+                        Ok(c) => string.push(c as char),
+                        Err(_) => break,
+                    }
+                }
+
+                assert_eq!(string, "Hello, World!");
+                tx.lock().unwrap().send(()).unwrap();
+            }
+        });
+
+        std::thread::spawn(move || {
+            let message = "Hello, World!".as_bytes();
+            for byte in message {
+                client.write_u8(*byte).unwrap();
+            }
+        });
+
+        rx.recv().unwrap();
     }
 }
