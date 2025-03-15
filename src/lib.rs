@@ -1,6 +1,8 @@
 mod binary_reader;
+mod binary_writer;
 
 pub use binary_reader::BinaryReader;
+pub use binary_writer::BinaryWriter;
 
 #[cfg(test)]
 mod tests {
@@ -8,145 +10,147 @@ mod tests {
     use std::io::Cursor;
 
     #[test]
-    fn test_u8_and_i8() {
-        assert_eq!(
-            Cursor::new(u8::MAX.to_be_bytes()).read_u8().unwrap(),
-            u8::MAX
-        );
-        assert_eq!(
-            Cursor::new(i8::MIN.to_be_bytes()).read_i8().unwrap(),
-            i8::MIN
-        );
+    fn test_u8_and_i8_read_write() {
+        let mut buffer = vec![0u8; 1];
+        let mut cursor = Cursor::new(buffer.as_mut_slice());
+        // u8
+        cursor.write_u8(u8::MAX).unwrap();
+        cursor.set_position(0);
+        assert_eq!(cursor.read_u8().unwrap(), u8::MAX);
+        // i8
+        cursor.set_position(0);
+        cursor.write_i8(i8::MAX).unwrap();
+        cursor.set_position(0);
+        assert_eq!(cursor.read_i8().unwrap(), i8::MAX);
     }
 
     #[test]
-    fn test_u16() {
-        assert_eq!(
-            Cursor::new(u16::MAX.to_be_bytes()).read_u16().unwrap(),
-            u16::MAX
-        );
-
-        assert_eq!(
-            Cursor::new(u16::MAX.to_le_bytes()).read_u16_le().unwrap(),
-            u16::MAX
-        );
+    fn test_u16_and_i16_read_write() {
+        let mut buffer = vec![0; 2];
+        let mut cursor = Cursor::new(buffer.as_mut_slice());
+        // u16 be
+        cursor.write_u16_be(u16::MAX - 1).unwrap();
+        cursor.set_position(0);
+        assert_eq!(cursor.read_u16_be().unwrap(), u16::MAX - 1);
+        // u16 le
+        cursor.set_position(0);
+        cursor.write_u16_le(u16::MAX - 1).unwrap();
+        cursor.set_position(0);
+        assert_eq!(cursor.read_u16_le().unwrap(), u16::MAX - 1);
+        // i16 be
+        cursor.set_position(0);
+        cursor.write_i16_be(i16::MAX - 1).unwrap();
+        cursor.set_position(0);
+        assert_eq!(cursor.read_i16_be().unwrap(), i16::MAX - 1);
+        // i16 le
+        cursor.set_position(0);
+        cursor.write_i16_le(i16::MAX - 1).unwrap();
+        cursor.set_position(0);
+        assert_eq!(cursor.read_i16_le().unwrap(), i16::MAX - 1);
     }
 
     #[test]
-    fn test_u32() {
-        assert_eq!(
-            Cursor::new(u32::MAX.to_be_bytes()).read_u32().unwrap(),
-            u32::MAX
-        );
-
-        assert_eq!(
-            Cursor::new(u32::MAX.to_le_bytes()).read_u32_le().unwrap(),
-            u32::MAX
-        );
+    fn test_u32_and_i32_read_write() {
+        let mut buffer = vec![0; 4];
+        let mut cursor = Cursor::new(buffer.as_mut_slice());
+        // u32 be
+        cursor.write_u32_be(u32::MAX - 1).unwrap();
+        cursor.set_position(0);
+        assert_eq!(cursor.read_u32_be().unwrap(), u32::MAX - 1);
+        // u32 le
+        cursor.set_position(0);
+        cursor.write_u32_le(u32::MAX - 1).unwrap();
+        cursor.set_position(0);
+        assert_eq!(cursor.read_u32_le().unwrap(), u32::MAX - 1);
+        // i32 be
+        cursor.set_position(0);
+        cursor.write_i32_be(i32::MAX - 1).unwrap();
+        cursor.set_position(0);
+        assert_eq!(cursor.read_i32_be().unwrap(), i32::MAX - 1);
+        // i32 le
+        cursor.set_position(0);
+        cursor.write_i32_le(i32::MAX - 1).unwrap();
+        cursor.set_position(0);
     }
 
     #[test]
-    fn test_u64() {
-        assert_eq!(
-            Cursor::new(u64::MAX.to_be_bytes()).read_u64().unwrap(),
-            u64::MAX
-        );
-
-        assert_eq!(
-            Cursor::new(u64::MAX.to_le_bytes()).read_u64_le().unwrap(),
-            u64::MAX
-        );
+    fn test_u64_and_i64_read_write() {
+        let mut buffer = vec![0; 8];
+        let mut cursor = Cursor::new(buffer.as_mut_slice());
+        // u64 be
+        cursor.write_u64_be(u64::MAX - 1).unwrap();
+        cursor.set_position(0);
+        assert_eq!(cursor.read_u64_be().unwrap(), u64::MAX - 1);
+        // u64 le
+        cursor.set_position(0);
+        cursor.write_u64_le(u64::MAX - 1).unwrap();
+        cursor.set_position(0);
+        assert_eq!(cursor.read_u64_le().unwrap(), u64::MAX - 1);
+        // i64 be
+        cursor.set_position(0);
+        cursor.write_i64_be(i64::MAX - 1).unwrap();
+        cursor.set_position(0);
+        assert_eq!(cursor.read_i64_be().unwrap(), i64::MAX - 1);
+        // i64 le
+        cursor.set_position(0);
+        cursor.write_i64_le(i64::MAX - 1).unwrap();
+        cursor.set_position(0);
+        assert_eq!(cursor.read_i64_le().unwrap(), i64::MAX - 1);
     }
 
     #[test]
-    fn test_u128() {
-        assert_eq!(
-            Cursor::new(u128::MAX.to_be_bytes()).read_u128().unwrap(),
-            u128::MAX
-        );
-
-        assert_eq!(
-            Cursor::new(u128::MAX.to_le_bytes()).read_u128_le().unwrap(),
-            u128::MAX
-        );
+    fn test_u128_and_i128_read_write() {
+        let mut buffer = vec![0; 16];
+        let mut cursor = Cursor::new(buffer.as_mut_slice());
+        // u128 be
+        cursor.write_u128_be(u128::MAX - 1).unwrap();
+        cursor.set_position(0);
+        assert_eq!(cursor.read_u128_be().unwrap(), u128::MAX - 1);
+        // u128 le
+        cursor.set_position(0);
+        cursor.write_u128_le(u128::MAX - 1).unwrap();
+        cursor.set_position(0);
+        assert_eq!(cursor.read_u128_le().unwrap(), u128::MAX - 1);
+        // i128 be
+        cursor.set_position(0);
+        cursor.write_i128_be(i128::MAX - 1).unwrap();
+        cursor.set_position(0);
+        assert_eq!(cursor.read_i128_be().unwrap(), i128::MAX - 1);
+        // i128 le
+        cursor.set_position(0);
+        cursor.write_i128_le(i128::MAX - 1).unwrap();
+        cursor.set_position(0);
+        assert_eq!(cursor.read_i128_le().unwrap(), i128::MAX - 1);
     }
 
     #[test]
-    fn test_i16() {
-        assert_eq!(
-            Cursor::new(i16::MAX.to_be_bytes()).read_i16().unwrap(),
-            i16::MAX
-        );
-
-        assert_eq!(
-            Cursor::new(i16::MAX.to_le_bytes()).read_i16_le().unwrap(),
-            i16::MAX
-        );
+    fn test_f32_read_write() {
+        let mut buffer = vec![0; 4];
+        let mut cursor = Cursor::new(buffer.as_mut_slice());
+        // f32 be
+        cursor.write_f32_be(f32::MAX - 1.1).unwrap();
+        cursor.set_position(0);
+        assert_eq!(cursor.read_f32_be().unwrap(), f32::MAX - 1.1);
+        // f32 le
+        cursor.set_position(0);
+        cursor.write_f32_le(f32::MAX - 1.1).unwrap();
+        cursor.set_position(0);
+        assert_eq!(cursor.read_f32_le().unwrap(), f32::MAX - 1.1);
     }
 
     #[test]
-    fn test_i32() {
-        assert_eq!(
-            Cursor::new(i32::MAX.to_be_bytes()).read_i32().unwrap(),
-            i32::MAX
-        );
-
-        assert_eq!(
-            Cursor::new(i32::MAX.to_le_bytes()).read_i32_le().unwrap(),
-            i32::MAX
-        );
-    }
-
-    #[test]
-    fn test_i64() {
-        assert_eq!(
-            Cursor::new(i64::MAX.to_be_bytes()).read_i64().unwrap(),
-            i64::MAX
-        );
-
-        assert_eq!(
-            Cursor::new(i64::MAX.to_le_bytes()).read_i64_le().unwrap(),
-            i64::MAX
-        );
-    }
-
-    #[test]
-    fn test_i128() {
-        assert_eq!(
-            Cursor::new(i128::MAX.to_be_bytes()).read_i128().unwrap(),
-            i128::MAX
-        );
-
-        assert_eq!(
-            Cursor::new(i128::MAX.to_le_bytes()).read_i128_le().unwrap(),
-            i128::MAX
-        );
-    }
-
-    #[test]
-    fn test_f32() {
-        assert_eq!(
-            Cursor::new(f32::MAX.to_be_bytes()).read_f32().unwrap(),
-            f32::MAX
-        );
-
-        assert_eq!(
-            Cursor::new(f32::MAX.to_le_bytes()).read_f32_le().unwrap(),
-            f32::MAX
-        );
-    }
-
-    #[test]
-    fn test_f64() {
-        assert_eq!(
-            Cursor::new(f64::MAX.to_be_bytes()).read_f64().unwrap(),
-            f64::MAX
-        );
-
-        assert_eq!(
-            Cursor::new(f64::MAX.to_le_bytes()).read_f64_le().unwrap(),
-            f64::MAX
-        );
+    fn test_f64_read_write() {
+        let mut buffer = vec![0; 8];
+        let mut cursor = Cursor::new(buffer.as_mut_slice());
+        // f64 be
+        cursor.write_f64_be(f64::MAX - 1.1).unwrap();
+        cursor.set_position(0);
+        assert_eq!(cursor.read_f64_be().unwrap(), f64::MAX - 1.1);
+        // f64 le
+        cursor.set_position(0);
+        cursor.write_f64_le(f64::MAX - 1.1).unwrap();
+        cursor.set_position(0);
+        assert_eq!(cursor.read_f64_le().unwrap(), f64::MAX - 1.1);
     }
 
     #[test]
