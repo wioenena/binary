@@ -1,5 +1,3 @@
-use std::io::Read;
-
 pub trait BinaryReader {
     fn read_u8(&mut self) -> std::io::Result<u8>;
     fn read_u16_be(&mut self) -> std::io::Result<u16>;
