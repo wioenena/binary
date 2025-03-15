@@ -190,8 +190,8 @@ mod tests {
 
         std::thread::spawn(move || {
             let message = "Hello, World!".as_bytes();
-            for byte in message {
-                client.write_u8(*byte).unwrap();
+            for &byte in message {
+                client.write_u8(byte).unwrap();
             }
         });
 
